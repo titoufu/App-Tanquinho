@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "742824771068",
+    "project_id": "apptanquinho",
+    "storage_bucket": "apptanquinho.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:742824771068:android:e549206f6a9539a6aa0679",
+        "android_client_info": {
+          "package_name": "com.titoufu.apptanquinho"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "742824771068-um79asi1usirmijku5pgdb9i17dg80uf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.titoufu.apptanquinho",
+            "certificate_hash": "85ae4fad90f02d000a533e14abfa97d1032c2d1d"
+          }
+        },
+        {
+          "client_id": "742824771068-s3lrlnnn0r993vi7ekfhv5uvetibpm9g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCfJwbWdCI20jWfLQovkiKR_Pau9K95azM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "742824771068-s3lrlnnn0r993vi7ekfhv5uvetibpm9g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

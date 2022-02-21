@@ -1,0 +1,5 @@
+package util;
+
+public enum Modo {
+    CICLO_LONGO,CICLO_MEDIO,CICLO_CURTO,CICLO_ESVAZIAR,CICLO_ENCHER;
+}

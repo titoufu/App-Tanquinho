@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     tools:context=".MainActivity">
 
     <RadioGroup
@@ -19,6 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Ciclo Longo"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
@@ -27,13 +29,16 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="Ciclo Medio"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
             android:id="@+id/idCicloCurto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:checked="true"
             android:text="Ciclo Curto"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
@@ -41,6 +46,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Esvaziar"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
@@ -49,6 +55,7 @@
             android:layout_height="wrap_content"
             android:minHeight="48dp"
             android:text="Encher"
+            android:textColor="@color/white"
             android:textSize="16sp"
             tools:ignore="TouchTargetSizeCheck" />
     </RadioGroup>
@@ -68,6 +75,7 @@
             android:layout_height="wrap_content"
             android:checked="false"
             android:text="Nivel Alto"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
@@ -75,6 +83,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Nivel Medio"
+            android:textColor="@color/white"
             android:textSize="16sp" />
 
         <RadioButton
@@ -82,18 +91,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:checked="true"
-            android:text="Nivel baixo" />
+            android:text="Nivel baixo"
+            android:textColor="@color/white" />
     </RadioGroup>
 
     <Button
         android:id="@+id/idBtnLigar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_marginTop="88dp"
+        android:backgroundTint="@color/botao_liberado"
+        android:elevation="5dp"
         android:onClick="Ligar"
-        android:text="LIGAR"
+        android:padding="15dp"
+        android:text="Ligar Tanquinho"
+        android:textSize="18dp"
+
+
+        app:cornerRadius="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radioGroupPrograma" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,16 +1,14 @@
 package com.titoufu.apptanquinho;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -18,58 +16,73 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.net.URI;
-
-import util.Comando;
-import util.ModoComunica;
+import util.Modo;
 import util.ModoOperacao;
 import util.Nivel;
-import util.Modo;
+import util.Tanque;
 
 public class MainActivity extends AppCompatActivity {
     // Esta linha busca a raiz do Banco de Dados no Firebase !!!!
-    private DatabaseReference referencia = FirebaseDatabase.getInstance().getReference();
-    // RadioButton
+    private final DatabaseReference referencia = FirebaseDatabase.getInstance().getReference("Tanque");
+    private final DatabaseReference resposta = referencia.child("resposta");
+    /* Initialize Firebase Auth
+    private final FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    FirebaseAuth.AuthStateListener mAuthListener;
+     */
+
     private RadioGroup opcaoPrograma;
     private RadioGroup opcaoNivel;
-    private Button botaoLigar;
+    private Button botao;
+    String str4 = "?";
+    boolean flagInicializa = true;
     ModoOperacao modoOperacao = new ModoOperacao();
-    ModoComunica modoComunica = new ModoComunica();
     private AlertDialog alerta;
-    final Boolean[] flag = {false};
+    private Tanque tanque = new Tanque();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //  referencia.child("pontos").setValue("100");  // Adiciona  à raiz um filho chamado "pontos" e atribui a ele um valor de 100.
-        //referencia.child("usuarios").child("tito").setValue("O bom do ano 2000");  // outro jeito
-
         opcaoPrograma = findViewById(R.id.radioGroupPrograma);
         opcaoNivel = findViewById(R.id.radioGroupNivel);
-        botaoLigar = findViewById(R.id.idBtnLigar);
-        AlertDialog.Builder builder;
-        radioButton();
+        botao = findViewById(R.id.idBtnLigar);
+        if (flagInicializa) radioButtonInitialize();
+        flagInicializa = false;
 
-        referencia.child("Comunica").addValueEventListener(new ValueEventListener() {
-
+        //////////////////// -  Ouvindo mudança na child "resposta" //////////////////////
+        resposta.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                ModoComunica resposta = dataSnapshot.getValue(ModoComunica.class);
-                String str1 = resposta.getResposta();
+                /*
+                 para ler um objeto inteiro (Tanque, poer exemplo:)
+                Tanque tanque=dataSnapshot.getValue(Tanque.class);
+                */
+                String str1 = dataSnapshot.getValue(String.class);
                 String str2 = "LIGAR: SIM ou NÃO ?";
+                String str3 = "LIGADO";
+                String str4 = "CICLO ENCERRADO";
                 if (str1.compareTo(str2) == 0) {
+                    botao.setBackgroundColor(R.color.botao_liberado);
                     alerta();
+                } else if (str1.compareTo(str3) == 0) {
+                    botao.setBackgroundColor(getColor(R.color.botao_travado));
+                    botao.setText("Tanquinho Ligado");
+                } else if (str1.compareTo(str4) == 0) {
+                    botao.setBackgroundColor(getColor(R.color.botao_liberado));
+                    botao.setText("Ligar Tanquinho");
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
 
             }
         });
-    }
 
-    public void radioButton() {
+        //////////////////
+
+
         opcaoPrograma.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -91,6 +104,9 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        //////////
+
         opcaoNivel.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedNivel) {
@@ -105,20 +121,34 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+    }
+
+
+    public void radioButtonInitialize() {
+        modoOperacao.setNivel((Nivel.BAIXO.toString()));
+        modoOperacao.setPrograma(Modo.CICLO_CURTO.toString());
+        tanque.setComando("DESLIGAR");
+        tanque.setPrograma(modoOperacao.getPrograma());
+        tanque.setNivel(modoOperacao.getNivel());
+        tanque.setResposta("App => comandou DESLIGAR");
+        tanque.setStatus("App Conectado");
+        referencia.setValue(tanque);
     }
 
     public void Ligar(View view) {
-        modoComunica.setComando(Comando.LIGAR.toString());
-        modoComunica.setResposta(Comando.SIM.toString());
-        referencia.child("Modo").setValue(modoOperacao);
-        referencia.child("Comunica").setValue(modoComunica);
+        tanque.setComando("LIGAR");
+        tanque.setPrograma(modoOperacao.getPrograma());
+        tanque.setNivel(modoOperacao.getNivel());
+        tanque.setResposta("App => comandou LIGAR");
+        tanque.setStatus("App Conectado");
+        referencia.setValue(tanque);
     }
 
-
-    private void alerta() {
+    public void alerta() {
         //Cria o gerador do AlertDialog
-
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
         //define o titulo
         builder.setTitle("Sistema de Comando do Tanquinho");
         //define a mensagem
@@ -126,24 +156,27 @@ public class MainActivity extends AppCompatActivity {
         //define um botão como positivo
         builder.setPositiveButton("SIM", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this, "Ligando ...", Toast.LENGTH_LONG).show();
-                modoComunica.setComando(Comando.SIM.toString());
-                modoComunica.setResposta(Comando.SIM.toString());
-                referencia.child("Comunica").setValue(modoComunica);
+                tanque.setComando("SIM");
+                tanque.setPrograma(modoOperacao.getPrograma());
+                tanque.setNivel(modoOperacao.getNivel());
+                tanque.setResposta("App => comandou SIM");
+                tanque.setStatus("App Conectado");
+                referencia.setValue(tanque);
             }
         });
         //define um botão como negativo.
         builder.setNegativeButton("NÃO", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface arg0, int arg1) {
-                Toast.makeText(MainActivity.this, "Desligando ...", Toast.LENGTH_LONG).show();
-                modoComunica.setComando(Comando.DESLIGAR.toString());
-                modoComunica.setResposta(Comando.AGUARDANDO.toString());
-                referencia.child("Comunica").setValue(modoComunica);
+                tanque.setComando("NÃO");
+                tanque.setPrograma(modoOperacao.getPrograma());
+                tanque.setNivel(modoOperacao.getNivel());
+                tanque.setResposta("App => comandou NÃO");
+                tanque.setStatus("App Conectado");
+                referencia.setValue(tanque);
             }
         });
         AlertDialog dialog = builder.create();
         dialog.show();
     }
 }
-
 
